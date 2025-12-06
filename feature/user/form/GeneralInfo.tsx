@@ -4,22 +4,31 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 
 import { Button } from "@/components/ui/button";
-import InputField from "../components/InputField";
+import InputField from "./InputField";
+import { EditorProps } from "@/lib/types";
+import { useEffect } from "react";
 
-const GeneralInfo = () => {
+const GeneralInfo = ({ resumeData, setResumeData }: EditorProps) => {
   const form = useForm<GeneralInfoType>({
     resolver: zodResolver(generalInfoSchema),
     defaultValues: {
-      title: "",
-      description: "",
+      title: resumeData.title || "",
+      description: resumeData.description || "",
     },
     mode: "onChange",
   });
 
-  const onSubmit = (data: GeneralInfoType) => {
-    console.log(data);
-  };
-
+  useEffect(() => {
+    const { unsubscribe } = form.watch(async (values) => {
+      const isValid = await form.trigger();
+      if (!isValid) return;
+      setResumeData({
+        ...resumeData,
+        ...values,
+      });
+    });
+    return unsubscribe;
+  }, [form, resumeData, setResumeData]);
   return (
     <div className="mx-auto max-w-xl space-y-6">
       <div className="space-y-1.5 text-center">
@@ -29,12 +38,18 @@ const GeneralInfo = () => {
         </p>
       </div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form className="space-y-8">
           <InputField
             control={form.control}
             name="title"
             label="Project Name"
             placeholder="My cool resume."
+          />
+          <InputField
+            control={form.control}
+            name="description"
+            label="Project Description"
+            placeholder="My project description."
           />
           <Button type="submit">Submit</Button>
         </form>

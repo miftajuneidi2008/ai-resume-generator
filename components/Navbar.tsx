@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React from "react";
-import { ModeToggle } from "../ModeToggle";
+import { ModeToggle } from "./ModeToggle";
+import { UserCircle } from "lucide-react";
 
 const Navbar = () => {
   return (
@@ -17,6 +18,9 @@ const Navbar = () => {
 
           <Link href={`/review-resume`} className="links">
             Review Resume
+          </Link>
+          <Link href={`/login`} className="links">
+            <UserCircle />
           </Link>
         </div>
       </nav>

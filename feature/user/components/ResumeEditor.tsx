@@ -2,8 +2,28 @@
 import { Button } from "../../../components/ui/button";
 import Link from "next/link";
 import GeneralInfo from "../form/GeneralInfo";
+import PersonalInfo from "../form/PersonalInfo";
+import { useSearchParams } from "next/navigation";
+import { steps } from "./steps";
+import BreadCrumbs from "./BreadCrumbs";
+import Footer from "./Footer";
+import { ResumeType } from "@/lib/ValidationSchema";
+import { useState } from "react";
 
 const ResumeEditor = () => {
+  const searchParams = useSearchParams();
+  const currentStep = searchParams.get("step") || steps[0].key;
+  const [resumeData, setResumeData] = useState<ResumeType>({});
+
+  function setSteps(key: string) {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set("step", key);
+    window.history.pushState(null, "", `?${newSearchParams.toString()}`);
+  }
+
+  const FormComponent = steps.find(
+    (step) => step.key === currentStep,
+  )?.Component;
   return (
     <div className="flex min-h-screen grow flex-col">
       <header className="space-y-1.5 border-b px-3 py-5 text-center">
@@ -16,28 +36,22 @@ const ResumeEditor = () => {
 
       <main className="relative flex-1 grow">
         <div className="absolute top-0 bottom-0 flex w-full">
-          <div className="w-full p-3 md:w-1/2">
-            <GeneralInfo />
+          <div className="w-full overflow-y-auto p-3 md:w-1/2">
+            <BreadCrumbs currentStep={currentStep} setCurrentStep={setSteps} />
+            {FormComponent && (
+              <FormComponent
+                resumeData={resumeData}
+                setResumeData={setResumeData}
+              />
+            )}
           </div>
           <div className="grow border-r" />
-          <div className="hidden w-1/2 md:flex">right</div>
+          <div className="hidden w-1/2 md:flex">
+            <pre>{JSON.stringify(resumeData, null, 2)}</pre>
+          </div>
         </div>
       </main>
-
-      <footer className="w-full border-t px-3 py-5">
-        <div className="flex flex-wrap justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <Button variant={"secondary"}>Previos Step</Button>
-            <Button>Next Step</Button>
-          </div>
-          <div className="flex items-center gap-3">
-            <Button variant={"secondary"} asChild>
-              <Link href={"/resumes"}>Close</Link>
-            </Button>
-            <p className="text-muted-foreground text-sm">saving...</p>
-          </div>
-        </div>
-      </footer>
+      <Footer currentStep={currentStep} setCurrentStep={setSteps} />
     </div>
   );
 };
