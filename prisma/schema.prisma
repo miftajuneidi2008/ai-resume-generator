@@ -98,6 +98,7 @@ model Resume {
   updatedAt      DateTime         @updatedAt
   WorkExperience WorkExperience[]
   Education      Education[]
+  skills         String[]
 
   @@map("resumes")
 }

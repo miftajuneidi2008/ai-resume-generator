@@ -9,6 +9,7 @@ import BreadCrumbs from "./BreadCrumbs";
 import Footer from "./Footer";
 import { ResumeType } from "@/lib/ValidationSchema";
 import { useState } from "react";
+import ResumePreviewSection from "./ResumePreviewSection";
 
 const ResumeEditor = () => {
   const searchParams = useSearchParams();
@@ -46,9 +47,10 @@ const ResumeEditor = () => {
             )}
           </div>
           <div className="grow border-r" />
-          <div className="hidden w-1/2 md:flex">
-            <pre>{JSON.stringify(resumeData, null, 2)}</pre>
-          </div>
+          <ResumePreviewSection
+            resumeData={resumeData}
+            setResumeData={setResumeData}
+          />
         </div>
       </main>
       <Footer currentStep={currentStep} setCurrentStep={setSteps} />

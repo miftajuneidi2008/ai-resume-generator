@@ -4,6 +4,8 @@ import GeneralInfo from "../form/GeneralInfo";
 import { EditorProps } from "@/lib/types";
 import { WorkExperience } from "../form/WorkExperience";
 import Education from "../form/Education";
+import Skill from "../form/Skill";
+import SummaryInfo from "../form/SummaryInfo";
 
 export const steps: {
   title: string;
@@ -29,5 +31,15 @@ export const steps: {
     title: "Education",
     Component: Education,
     key: "education",
+  },
+  {
+    title: "Skills",
+    Component: Skill,
+    key: "skills",
+  },
+  {
+    title: "Summary",
+    Component: SummaryInfo,
+    key: "summary",
   },
 ];
