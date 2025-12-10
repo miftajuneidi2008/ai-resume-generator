@@ -12,9 +12,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { Button } from "./ui/button";
+import { signOut } from "@/lib/auth-client";
 
 const Navbar = async () => {
   const session = await getUserSession();
+  let name = "";
+  if (session) {
+    const names = session.user.name.split(" ");
+    name = names[0].charAt(0).toUpperCase() + names[1].charAt(0).toUpperCase();
+  }
   return (
     <header className="sticky top-0 z-50 h-20 w-full shadow-xs backdrop-blur-xs">
       <nav className="mx-auto flex h-full max-w-7xl items-center justify-between">
@@ -39,16 +46,39 @@ const Navbar = async () => {
                     alt="@evilrabbit"
                     className="h-10 w-10 rounded-full focus:ring-0 focus:outline-none"
                   />
-                  <AvatarFallback>ER</AvatarFallback>
+                  <AvatarFallback className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100">
+                    {name}
+                  </AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Billing</DropdownMenuItem>
-                <DropdownMenuItem>Team</DropdownMenuItem>
-                <DropdownMenuItem>Subscription</DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer">
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer">
+                  Billing
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer">
+                  Subscription
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer">
+                  <form
+                    action={async () => {
+                      "use server";
+                      await signOut();
+                    }}
+                  >
+                    <Button
+                      type="submit"
+                      variant={"outline"}
+                      className="border-none pl-2 hover:bg-transparent"
+                    >
+                      Logout
+                    </Button>
+                  </form>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
