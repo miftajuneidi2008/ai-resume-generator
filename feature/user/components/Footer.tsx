@@ -3,17 +3,20 @@ import Link from "next/link";
 import React from "react";
 import { steps } from "./steps";
 import { FileUserIcon, PenLineIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 interface FooterProps {
   currentStep: string;
   setCurrentStep: (step: string) => void;
   showPreview: boolean;
   setResumePreview: (show: boolean) => void;
+  isSaving: boolean;
 }
 const Footer = ({
   currentStep,
   setCurrentStep,
   showPreview,
   setResumePreview,
+  isSaving,
 }: FooterProps) => {
   const prevStep = steps.find(
     (_, index) => steps[index + 1]?.key === currentStep,
@@ -54,7 +57,14 @@ const Footer = ({
           <Button variant={"secondary"} asChild>
             <Link href={"/resumes"}>Close</Link>
           </Button>
-          <p className="text-muted-foreground text-sm">saving...</p>
+          <p
+            className={cn(
+              "text-muted-foreground text-sm opacity-0",
+              isSaving && "opacity-100",
+            )}
+          >
+            saving...
+          </p>
         </div>
       </div>
     </footer>

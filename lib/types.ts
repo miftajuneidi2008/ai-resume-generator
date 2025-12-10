@@ -11,12 +11,14 @@ export interface EditorProps {
 }
 
 export interface WorkExperienceProps {
+  id: string;
   index: number;
   form: UseFormReturn<WorkExperienceType>;
   remove: (index: number) => void;
 }
 
 export interface EducationProps {
+  id: string;
   index: number;
   form: UseFormReturn<EducationType>;
   remove: (index: number) => void;

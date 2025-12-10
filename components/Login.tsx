@@ -9,6 +9,7 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import google from "@/asset/image/icons8-google-48.png";
 import Image from "next/image";
+import { signIn } from "@/lib/auth-client";
 
 const Login = () => {
   const form = useForm<LoginType>({
@@ -19,6 +20,12 @@ const Login = () => {
     },
     mode: "onChange",
   });
+  const SocialLogin = async () => {
+    const data = await signIn.social({
+      provider: "google",
+      callbackURL: `http://localhost:3000/`,
+    });
+  };
   return (
     <div className="mx-auto flex w-full max-w-md flex-col gap-6 rounded-md border p-6 shadow-md">
       <Form {...form}>
@@ -48,6 +55,7 @@ const Login = () => {
       <Button
         className="flex cursor-pointer items-center gap-2"
         variant={"outline"}
+        onClick={SocialLogin}
       >
         <Image
           src={google}
