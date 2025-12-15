@@ -82,6 +82,7 @@ model Verification {
 model Resume {
   id             String           @id @default(cuid())
   title          String?
+  userId         String
   description    String?
   photoUrl       String?
   colorHex       String           @default("#000000")

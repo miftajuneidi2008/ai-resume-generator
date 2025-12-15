@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Roboto } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({
   variable: "--font-geist-sans",
@@ -27,6 +28,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <Toaster position="top-center" reverseOrder={false} />
           {children}
         </ThemeProvider>
       </body>

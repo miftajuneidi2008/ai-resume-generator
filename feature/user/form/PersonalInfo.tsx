@@ -5,8 +5,19 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import InputField from "./InputField";
-import { Form } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { EditorProps } from "@/lib/types";
+import Image from "next/image";
+import { X } from "lucide-react";
+import { UploadButton } from "@/lib/uploadthing";
+import toast from "react-hot-toast";
 
 const PersonalInfo = ({ resumeData, setResumeData }: EditorProps) => {
   const form = useForm<PersonalInfoType>({
@@ -23,7 +34,8 @@ const PersonalInfo = ({ resumeData, setResumeData }: EditorProps) => {
     },
     mode: "onChange",
   });
-
+  const photoUrl = form.watch("photo");
+  console.log(photoUrl);
   useEffect(() => {
     const { unsubscribe } = form.watch(async (values) => {
       const isValid = await form.trigger();
@@ -48,12 +60,51 @@ const PersonalInfo = ({ resumeData, setResumeData }: EditorProps) => {
           className="space-y-8"
           onSubmit={form.handleSubmit((data) => console.log(data))}
         >
-          <InputField
+          <FormField
             control={form.control}
             name="photo"
-            label="Photo"
-            placeholder="Photo"
-            isFile={true}
+            render={({ field }) => (
+              <FormItem className="flex flex-col items-center justify-center">
+                <FormLabel>Profile Picture</FormLabel>
+                <FormControl>
+                  {photoUrl ? (
+                    // A: If we have a URL, show the image + remove button
+                    <div className="relative h-32 w-32">
+                      <Image
+                        src={photoUrl}
+                        alt="Profile photo"
+                        fill
+                        className="rounded-full border object-cover shadow-sm"
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        className="absolute -top-2 -right-2 h-6 w-6 cursor-pointer rounded-full"
+                        onClick={() => {
+                          field.onChange("");
+                        }}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <UploadButton
+                      endpoint="resumePhoto"
+                      onClientUploadComplete={(res) => {
+                        const url = res[0].ufsUrl;
+                        field.onChange(url);
+                        toast("Photo uploaded successfully");
+                      }}
+                      onUploadError={(error: Error) => {
+                        toast.error(error.message);
+                      }}
+                    />
+                  )}
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
           <div className="grid grid-cols-2 gap-4">
             <InputField

@@ -26,18 +26,7 @@ export type SignupType = z.infer<typeof SignupSchema>;
 // personal info schema
 
 export const personalInfoSchema = z.object({
-  photo: z
-    .custom<File | undefined>()
-    .refine(
-      (file) =>
-        !file || (file instanceof File && file.type.startsWith("image/")),
-      {
-        message: "Please upload a valid image file",
-      },
-    )
-    .refine((file) => !file || file.size <= 1024 * 1024 * 3, {
-      message: "File size should be less than 3MB",
-    }),
+  photo: z.string().optional().nullable().or(z.literal("")),
   firstName: optionalString,
   lastName: optionalString,
   jobTitle: optionalString,
@@ -102,7 +91,6 @@ export const resumeSchema = z.object({
   borderStyle: optionalString,
 });
 
-export type ResumeType = Omit<z.infer<typeof resumeSchema>, "photo"> & {
+export type ResumeType = z.infer<typeof resumeSchema> & {
   id?: string;
-  photo?: File | string | undefined;
 };

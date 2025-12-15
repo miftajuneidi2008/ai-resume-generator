@@ -53,25 +53,12 @@ function PersonalInfoPreview({ resumeData }: { resumeData: ResumeType }) {
     colorHex,
     borderStyle,
   } = resumeData;
-  const [url, setUrl] = useState<string>("");
-
-  useEffect(() => {
-    const objectUrl = photo instanceof File ? URL.createObjectURL(photo) : "";
-    if (objectUrl) {
-      setUrl(objectUrl);
-    }
-    return () => {
-      if (objectUrl) {
-        URL.revokeObjectURL(objectUrl);
-      }
-    };
-  }, [photo]);
 
   return (
     <div className="flex items-center gap-6">
-      {url && (
+      {photo && (
         <Image
-          src={url}
+          src={photo}
           alt="profile photo"
           width={100}
           height={100}
