@@ -1,3 +1,4 @@
+import { generateCodeChallenge } from "better-auth";
 import { z } from "zod";
 const optionalString = z.string().trim().optional().or(z.literal(""));
 
@@ -17,7 +18,7 @@ export type LoginType = z.infer<typeof loginSchema>;
 
 export const SignupSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters long"),
-  email: z.string().email(),
+  email: z.email(),
   password: z.string().min(6, "Password must be at least 6 characters long"),
 });
 
@@ -53,6 +54,19 @@ export const workExperienceSchema = z.object({
 });
 
 export type WorkExperienceType = z.infer<typeof workExperienceSchema>;
+export type WorkExperiences = NonNullable<
+  z.infer<typeof workExperienceSchema>["workExperience"]
+>[number];
+
+export const generateWorkExperienceSchema = z.object({
+  description: z
+    .string()
+    .min(1, "Description is required")
+    .min(20, "Description must be at least 20 characters long"),
+});
+export type GenerateWorkExperienceType = z.infer<
+  typeof generateWorkExperienceSchema
+>;
 
 export const EducationSchema = z.object({
   education: z
@@ -62,7 +76,6 @@ export const EducationSchema = z.object({
         school: optionalString,
         startDate: optionalString,
         endDate: optionalString,
-        description: optionalString,
       }),
     )
     .optional(),
@@ -94,3 +107,12 @@ export const resumeSchema = z.object({
 export type ResumeType = z.infer<typeof resumeSchema> & {
   id?: string;
 };
+
+export const generateSummarySchema = z.object({
+  jobTitle: optionalString,
+  ...workExperienceSchema.shape,
+  ...EducationSchema.shape,
+  ...SkillSchema.shape,
+});
+
+export type GenerateSummaryType = z.infer<typeof generateSummarySchema>;

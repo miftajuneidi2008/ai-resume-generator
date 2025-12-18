@@ -120,13 +120,14 @@ model WorkExperience {
 }
 
 model Education {
-  id        String    @id @default(cuid())
-  degree    String?
-  school    String?
-  startDate DateTime?
-  endDate   DateTime?
-  resumeId  String
-  resume    Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  id          String    @id @default(cuid())
+  degree      String?
+  school      String?
+  startDate   DateTime?
+  endDate     DateTime?
+  resumeId    String
+  description String?
+  resume      Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 
   @@map("education")
 }

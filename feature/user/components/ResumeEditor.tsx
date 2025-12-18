@@ -1,8 +1,5 @@
 "use client";
-import { Button } from "../../../components/ui/button";
-import Link from "next/link";
-import GeneralInfo from "../form/GeneralInfo";
-import PersonalInfo from "../form/PersonalInfo";
+
 import { useSearchParams } from "next/navigation";
 import { steps } from "./steps";
 import BreadCrumbs from "./BreadCrumbs";

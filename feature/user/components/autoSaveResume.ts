@@ -48,7 +48,7 @@ export default function useAutoSaveResume(resumeData: ResumeType) {
         }
       } catch (error: any) {
         setError(true);
-        toast.error(error || "Something went wrong");
+        toast.error(error.message || "Something went wrong");
       } finally {
         setIsSaving(false);
       }

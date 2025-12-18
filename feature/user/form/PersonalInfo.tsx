@@ -35,7 +35,6 @@ const PersonalInfo = ({ resumeData, setResumeData }: EditorProps) => {
     mode: "onChange",
   });
   const photoUrl = form.watch("photo");
-  console.log(photoUrl);
   useEffect(() => {
     const { unsubscribe } = form.watch(async (values) => {
       const isValid = await form.trigger();
