@@ -1,5 +1,5 @@
-import ResumeEditor from "@/feature/user/components/ResumeEditor";
-import Wrapper from "@/components/user/Wrapper";
+import ResumeEditor from "@/components/user/ResumeEditor";
+import Wrapper from "@/components/shared/Wrapper";
 import React from "react";
 import { getUserSession } from "@/lib/getUserSession";
 import { redirect } from "next/navigation";

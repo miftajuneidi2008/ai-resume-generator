@@ -2,7 +2,7 @@ import React from "react";
 import { ResumeType } from "@/lib/ValidationSchema";
 import LoadingButton from "./LoaadingButton";
 import { WandSparklesIcon } from "lucide-react";
-import { generateProfessionalSummary } from "@/feature/action";
+import { generateProfessionalSummary } from "@/services/action";
 import toast from "react-hot-toast";
 export interface GenerateSummaryButtonProps {
   resumeData: ResumeType;

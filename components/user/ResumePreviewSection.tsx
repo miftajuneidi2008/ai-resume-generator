@@ -2,8 +2,8 @@ import { ResumeType } from "@/lib/ValidationSchema";
 import React from "react";
 import ResumePreview from "./ResumePreview";
 import ColorPicker from "./ColorPicker";
-import BorderStyleButton from "./BorderStyleButton";
 import { cn } from "@/lib/utils";
+import BorderStyleButton from "./BorderStyleButton";
 interface ResumePreviewSectionProps {
   resumeData: ResumeType;
   setResumeData: (data: ResumeType) => void;

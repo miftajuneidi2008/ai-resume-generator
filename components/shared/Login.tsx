@@ -1,5 +1,5 @@
 "use client";
-import InputField from "@/feature/user/form/InputField";
+import InputField from "@/components/user/form/InputField";
 import { loginSchema, LoginType } from "@/lib/ValidationSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";

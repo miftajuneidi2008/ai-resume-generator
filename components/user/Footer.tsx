@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import React from "react";
-import { steps } from "./steps";
 import { FileUserIcon, PenLineIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { steps } from "./steps";
 interface FooterProps {
   currentStep: string;
   setCurrentStep: (step: string) => void;

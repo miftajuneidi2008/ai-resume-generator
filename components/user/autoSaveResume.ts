@@ -1,4 +1,4 @@
-import { saveResume } from "@/components/user/action";
+import { saveResume } from "@/data/action";
 import useDebounce from "@/hooks/useDebounce";
 import { ResumeType } from "@/lib/ValidationSchema";
 import { useSearchParams } from "next/navigation";

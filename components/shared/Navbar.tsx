@@ -1,6 +1,5 @@
 import Link from "next/link";
 import React from "react";
-import { ModeToggle } from "./ModeToggle";
 import { UserCircle } from "lucide-react";
 import { getUserSession } from "@/lib/getUserSession";
 import {
@@ -12,8 +11,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { signOut } from "@/lib/auth-client";
+import { ModeToggle } from "./ModeToggle";
 
 const Navbar = async () => {
   const session = await getUserSession();
@@ -32,6 +32,9 @@ const Navbar = async () => {
           <ModeToggle />
           <Link href={`/create-resume`} className="links">
             Create Resume
+          </Link>
+          <Link href={`/fetch-resume`} className="links">
+            My Resume
           </Link>
 
           <Link href={`/review-resume`} className="links">

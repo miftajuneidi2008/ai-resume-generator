@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Roboto } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "react-hot-toast";
+import { ThemeProvider } from "@/components/shared/theme-provider";
 
 const inter = Inter({
   variable: "--font-geist-sans",

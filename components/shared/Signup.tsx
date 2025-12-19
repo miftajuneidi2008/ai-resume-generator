@@ -4,7 +4,7 @@ import Link from "next/link";
 import React from "react";
 import { Button } from "./ui/button";
 import { Form } from "./ui/form";
-import InputField from "@/feature/user/form/InputField";
+import InputField from "@/components/user/form/InputField";
 import { useForm } from "react-hook-form";
 import { SignupSchema, SignupType } from "@/lib/ValidationSchema";
 import { zodResolver } from "@hookform/resolvers/zod";

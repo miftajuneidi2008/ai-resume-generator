@@ -1,12 +1,17 @@
-import { EditorProps, EducationProps } from "@/lib/types";
-import { EducationSchema, EducationType } from "@/lib/ValidationSchema";
+"use client";
+import { Button } from "@/components/ui/button";
+import { Form, FormDescription } from "@/components/ui/form";
+import { EditorProps, WorkExperienceProps } from "@/lib/types";
+import {
+  workExperienceSchema,
+  WorkExperienceType,
+} from "@/lib/ValidationSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { GripHorizontal } from "lucide-react";
 import React, { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import InputField from "./InputField";
-import { GripHorizontal } from "lucide-react";
-import { Form, FormDescription } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import {
   closestCenter,
   DndContext,
@@ -23,35 +28,36 @@ import {
   useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import { cn } from "@/lib/utils";
 import { CSS } from "@dnd-kit/utilities";
+import { cn } from "@/lib/utils";
+import GenerateWorkExperienceButton from "./GenerateWorkExperienceButton";
 
-const Education = ({ resumeData, setResumeData }: EditorProps) => {
-  const form = useForm<EducationType>({
-    resolver: zodResolver(EducationSchema),
+export const WorkExperience = ({ resumeData, setResumeData }: EditorProps) => {
+  const form = useForm<WorkExperienceType>({
+    resolver: zodResolver(workExperienceSchema),
     defaultValues: {
-      education: resumeData.education || [],
+      workExperience: resumeData.workExperience || [],
     },
     mode: "onChange",
   });
 
   useEffect(() => {
-    const { unsubscribe } = form.watch(async (value) => {
+    const { unsubscribe } = form.watch(async (values) => {
       const isValid = await form.trigger();
-      if (!isValid) {
-        return;
-      }
+      if (!isValid) return;
       setResumeData({
         ...resumeData,
-        education: value.education?.filter((edu) => edu !== undefined),
+        workExperience: values.workExperience?.filter(
+          (exp) => exp !== undefined,
+        ),
       });
     });
     return unsubscribe;
   }, [form, resumeData, setResumeData]);
+
   const { fields, append, remove, move } = useFieldArray({
     control: form.control,
-    name: "education",
+    name: "workExperience",
   });
 
   const sensors = useSensors(
@@ -69,13 +75,12 @@ const Education = ({ resumeData, setResumeData }: EditorProps) => {
       return arrayMove(fields, oldIndex, newIndex);
     }
   };
-
   return (
     <div className="mx-auto max-w-xl space-y-6">
       <div className="space-y-1.5 text-center">
-        <h2 className="text-2xl font-semibold">Education</h2>
+        <h2 className="text-2xl font-semibold">Work Experience</h2>
         <p className="text-muted-foreground text-sm">
-          Add as many education as you want
+          Add as many work experiences as you want
         </p>
       </div>
       <Form {...form}>
@@ -91,7 +96,7 @@ const Education = ({ resumeData, setResumeData }: EditorProps) => {
               strategy={verticalListSortingStrategy}
             >
               {fields.map((field, index) => (
-                <EducationItem
+                <WorkExperienceItem
                   key={field.id}
                   id={field.id}
                   index={index}
@@ -106,8 +111,8 @@ const Education = ({ resumeData, setResumeData }: EditorProps) => {
               type="button"
               onClick={() =>
                 append({
-                  degree: "",
-                  school: "",
+                  position: "",
+                  company: "",
                   startDate: "",
                   endDate: "",
                   description: "",
@@ -115,7 +120,7 @@ const Education = ({ resumeData, setResumeData }: EditorProps) => {
               }
               className="cursor-pointer"
             >
-              Add Education
+              Add Work Experience
             </Button>
           </div>
         </form>
@@ -124,9 +129,7 @@ const Education = ({ resumeData, setResumeData }: EditorProps) => {
   );
 };
 
-export default Education;
-
-function EducationItem({ id, index, form, remove }: EducationProps) {
+function WorkExperienceItem({ id, index, form, remove }: WorkExperienceProps) {
   const {
     attributes,
     listeners,
@@ -142,51 +145,61 @@ function EducationItem({ id, index, form, remove }: EducationProps) {
         isDragging && "relative z-50 cursor-grab shadow-xl",
       )}
       ref={setNodeRef}
-      style={{
-        transform: CSS.Transform.toString(transform),
-        transition,
-      }}
+      style={{ transform: CSS.Transform.toString(transform), transition }}
     >
       <div className="flex justify-between gap-2">
-        <span className="font-semibold">Education {index + 1}</span>
+        <span className="font-semibold">Work Experience {index + 1}</span>
         <GripHorizontal
           className="text-muted-foreground size-5 cursor-grab focus:outline-none"
           {...attributes}
           {...listeners}
         />
       </div>
+      <div className="flex justify-center">
+        <GenerateWorkExperienceButton
+          onWorkExperienceGenerated={(workExperience) => {
+            form.setValue(`workExperience.${index}`, workExperience);
+          }}
+        />
+      </div>
       <InputField
         control={form.control}
-        name={`education.${index}.degree`}
-        label="Degree"
-        placeholder="e.g. MSc in software engineering "
+        name={`workExperience.${index}.position`}
+        label="Job Title"
+        placeholder="e.g. Software Engineer"
       />
       <InputField
         control={form.control}
-        name={`education.${index}.school`}
-        label="School"
-        placeholder="e.g. University of Technology"
+        name={`workExperience.${index}.company`}
+        label="Company"
+        placeholder="e.g. Google"
       />
       <div className="grid grid-cols-2 gap-2">
         <InputField
           control={form.control}
-          name={`education.${index}.startDate`}
+          name={`workExperience.${index}.startDate`}
           label="Start Date"
           placeholder="e.g. 2020"
           type="date"
         />
         <InputField
           control={form.control}
-          name={`education.${index}.endDate`}
+          name={`workExperience.${index}.endDate`}
           label="End Date"
           placeholder="e.g. 2020"
           type="date"
         />
       </div>
-
       <FormDescription>
-        Leave <span>end date</span> empty if you are currently learing here.
+        Leave <span>end date</span> empty if you are currently working here.
       </FormDescription>
+      <InputField
+        control={form.control}
+        name={`workExperience.${index}.description`}
+        label="Description"
+        placeholder="e.g. Google"
+        type="text-area"
+      />
       <Button
         type="button"
         onClick={() => remove(index)}

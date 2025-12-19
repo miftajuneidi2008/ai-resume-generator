@@ -1,11 +1,11 @@
 import React from "react";
-import PersonalInfo from "../form/PersonalInfo";
-import GeneralInfo from "../form/GeneralInfo";
+import GeneralInfo from "./form/GeneralInfo";
 import { EditorProps } from "@/lib/types";
-import { WorkExperience } from "../form/WorkExperience";
-import Education from "../form/Education";
-import Skill from "../form/Skill";
-import SummaryInfo from "../form/SummaryInfo";
+import PersonalInfo from "./form/PersonalInfo";
+import Education from "./form/Education";
+import Skill from "./form/Skill";
+import SummaryInfo from "./form/SummaryInfo";
+import { WorkExperience } from "./form/WorkExperience";
 
 export const steps: {
   title: string;

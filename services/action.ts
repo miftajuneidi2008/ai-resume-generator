@@ -5,6 +5,7 @@ import {
   GenerateSummaryType,
   generateWorkExperienceSchema,
   GenerateWorkExperienceType,
+  WorkExperiences,
   WorkExperienceType,
 } from "@/lib/ValidationSchema";
 import Groq from "groq-sdk";
@@ -78,6 +79,7 @@ export async function GenerateWorkExperience(
       ],
       model: "llama-3.3-70b-versatile", // or "llama-3.1-8b-instant"
     });
+    console.log(chatCompletion.choices[0]?.message?.content, "asgsdg");
 
     if (chatCompletion.choices[0]?.message?.content) {
       const aiResponse = chatCompletion.choices[0]?.message?.content;
@@ -89,13 +91,7 @@ export async function GenerateWorkExperience(
         ).trim(),
         startDate: aiResponse.match(/Start date: (\d{4}-\d{2}-\d{2})/)?.[1],
         endDate: aiResponse.match(/End date: (\d{4}-\d{2}-\d{2})/)?.[1],
-      } satisfies {
-        position: string;
-        company: string;
-        description: string;
-        startDate: string | undefined;
-        endDate: string | undefined;
-      };
+      } satisfies WorkExperiences;
     }
   } catch (error) {
     console.error("AI Error:", error);

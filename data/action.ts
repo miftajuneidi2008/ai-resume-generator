@@ -10,7 +10,6 @@ export const saveResume = async (values: ResumeType) => {
   if (!session) {
     return redirect("/login");
   }
-  console.log(values);
   const { id } = values;
   const { photo, workExperience, education, ...resumeVaues } = values;
   const existingResume = id
@@ -72,3 +71,28 @@ export const saveResume = async (values: ResumeType) => {
     });
   }
 };
+
+//fetch resume
+
+export async function fetchResume() {
+  const session = await getUserSession();
+  if (!session) {
+    return redirect("/login");
+  }
+  const userId = session.user.id!;
+  try {
+    const resumeData = await prisma.resume.findMany({
+      where: { userId: userId },
+      include: {
+        WorkExperience: true,
+        Education: true,
+      },
+      orderBy: { updatedAt: "desc" },
+    });
+    if (resumeData) {
+      return resumeData;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}

@@ -1,5 +1,5 @@
-import Login from "@/components/Login";
-import Wrapper from "@/components/user/Wrapper";
+import Login from "@/components/shared/Login";
+import Wrapper from "@/components/shared/Wrapper";
 import React from "react";
 
 const page = () => {

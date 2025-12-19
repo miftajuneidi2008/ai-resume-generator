@@ -1,15 +1,15 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { steps } from "./steps";
 import BreadCrumbs from "./BreadCrumbs";
-import Footer from "./Footer";
 import { ResumeType } from "@/lib/ValidationSchema";
 import { useState } from "react";
 import ResumePreviewSection from "./ResumePreviewSection";
 import { cn } from "@/lib/utils";
 import useUnloadWarning from "@/hooks/useUnloadWarning";
 import autoSaveResume from "./autoSaveResume";
+import { steps } from "./steps";
+import Footer from "./Footer";
 
 const ResumeEditor = () => {
   const searchParams = useSearchParams();
