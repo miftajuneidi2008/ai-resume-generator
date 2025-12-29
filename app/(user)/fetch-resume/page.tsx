@@ -1,4 +1,6 @@
+
 import Wrapper from "@/components/shared/Wrapper";
+import ResumeItem from "@/components/user/ResumeItem";
 import { fetchResume } from "@/data/action";
 import { getUserSession } from "@/lib/getUserSession";
 import { redirect } from "next/navigation";
@@ -15,6 +17,11 @@ const FetchResumePage = async () => {
       <div className="space-y-1">
         <h1 className="text-bold text-3xl">Your resumes </h1>
         <p>Total: {resumeData?.length}</p>
+      </div>
+      <div className="flex grid-cols-2 flex-col sm:grid md:grid-cols-3 lg:grid-cols-4">
+        {resumeData?.map((resume) => (
+          <ResumeItem resume={resume} key={resume.id} />
+        ))}
       </div>
     </Wrapper>
   );

@@ -5,16 +5,20 @@ import BreadCrumbs from "./BreadCrumbs";
 import { ResumeType } from "@/lib/ValidationSchema";
 import { useState } from "react";
 import ResumePreviewSection from "./ResumePreviewSection";
-import { cn } from "@/lib/utils";
+import { cn, mapToResumeValues } from "@/lib/utils";
 import useUnloadWarning from "@/hooks/useUnloadWarning";
 import autoSaveResume from "./autoSaveResume";
 import { steps } from "./steps";
 import Footer from "./Footer";
+import { ResumeEditorProps } from "@/lib/types";
 
-const ResumeEditor = () => {
+const ResumeEditor = ({ resumeToEdit }: ResumeEditorProps) => {
   const searchParams = useSearchParams();
+
   const currentStep = searchParams.get("step") || steps[0].key;
-  const [resumeData, setResumeData] = useState<ResumeType>({});
+  const [resumeData, setResumeData] = useState<ResumeType>(
+    resumeToEdit ? mapToResumeValues(resumeToEdit) : {},
+  );
   const [resumePreview, setResumePreview] = useState(false);
   const { isSaving, hasUnsavedChanges } = autoSaveResume(resumeData);
   useUnloadWarning(hasUnsavedChanges);

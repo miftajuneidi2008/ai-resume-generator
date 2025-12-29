@@ -4,6 +4,8 @@ import {
   ResumeType,
   WorkExperienceType,
 } from "./ValidationSchema";
+import prisma from "./prisma";
+import { Prisma } from "@/generated/prisma/client";
 
 export interface EditorProps {
   resumeData: ResumeType;
@@ -22,4 +24,17 @@ export interface EducationProps {
   index: number;
   form: UseFormReturn<EducationType>;
   remove: (index: number) => void;
+}
+
+export const resumeToInclude = {
+  WorkExperience: true,
+  Education: true,
+} satisfies Prisma.ResumeInclude;
+
+export type ResumeServerData = Prisma.ResumeGetPayload<{
+  include: typeof resumeToInclude;
+}>;
+
+export interface ResumeEditorProps {
+  resumeToEdit: ResumeServerData | null;
 }

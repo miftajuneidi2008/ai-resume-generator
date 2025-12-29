@@ -10,10 +10,15 @@ import { Badge } from "@/components/ui/badge";
 import { BorderStyles } from "./BorderStyleButton";
 interface ResumePreviewProps {
   resumeData: ResumeType;
+  contentRef: React.Ref<HTMLDivElement>;
   className?: string;
 }
 
-const ResumePreview = ({ resumeData, className }: ResumePreviewProps) => {
+const ResumePreview = ({
+  resumeData,
+  className,
+  contentRef,
+}: ResumePreviewProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { width } = useDimensions(containerRef);
   return (
@@ -27,6 +32,8 @@ const ResumePreview = ({ resumeData, className }: ResumePreviewProps) => {
       <div
         className={cn("space-y-6 p-6", !width && "invisible")}
         style={{ zoom: (1 / 794) * width }}
+        ref={contentRef}
+        id="resumePreviewContent"
       >
         <PersonalInfoPreview resumeData={resumeData} />
         <SummarySection resumeData={resumeData} />
@@ -62,6 +69,8 @@ function PersonalInfoPreview({ resumeData }: { resumeData: ResumeType }) {
           alt="profile photo"
           width={100}
           height={100}
+          priority
+          unoptimized
           className="aspect-square object-cover"
           style={{
             borderRadius:

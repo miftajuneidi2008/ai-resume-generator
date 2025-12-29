@@ -2,7 +2,10 @@
 
 import { getUserSession } from "@/lib/getUserSession";
 import prisma from "@/lib/prisma";
+import { resumeToInclude } from "@/lib/types";
+import { utapi } from "@/lib/uploadthing-server";
 import { ResumeType } from "@/lib/ValidationSchema";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export const saveResume = async (values: ResumeType) => {
@@ -83,10 +86,7 @@ export async function fetchResume() {
   try {
     const resumeData = await prisma.resume.findMany({
       where: { userId: userId },
-      include: {
-        WorkExperience: true,
-        Education: true,
-      },
+      include: resumeToInclude,
       orderBy: { updatedAt: "desc" },
     });
     if (resumeData) {
@@ -95,4 +95,41 @@ export async function fetchResume() {
   } catch (error) {
     console.log(error);
   }
+}
+
+export async function deleteResume(id: string) {
+  const session = await getUserSession();
+
+  if (!session?.user.id) {
+    throw new Error("User not authenticated");
+  }
+
+  const userId = session.user.id;
+  const resume = await prisma.resume.findUnique({
+    where: {
+      id,
+      userId,
+    },
+  });
+
+  if (!resume) {
+    throw new Error("Resume not found");
+  }
+
+  if (resume.photoUrl) {
+    const fileKey = resume.photoUrl.substring(
+      resume.photoUrl.lastIndexOf("/") + 1,
+    );
+
+    // 3. Delete the file from UploadThing
+    await utapi.deleteFiles(fileKey);
+  }
+
+  await prisma.resume.delete({
+    where: {
+      id,
+    },
+  });
+
+  revalidatePath("/resumes");
 }

@@ -12,18 +12,22 @@ const Pricing = () => {
       <div className="my-6 flex w-full items-center justify-center">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <PricingCard
-            title="Basic"
+            title="Premium"
             price={0}
-            features={["1 Resume", "1 Download", "1 Month"]}
+            features={[
+              "AI Tools",
+              "Design Customization",
+              "Up to three resumes",
+            ]}
+            className="bg-black text-white"
+            buttonText="Get Premium"
           />
           <PricingCard
             title="Premium"
             price={5}
-            features={[
-              "Unlimited Resume",
-              "Unlimited Download",
-              "Unlimited Month",
-            ]}
+            features={["AI Tools", "Design Customization", "Unlimited Resume"]}
+            className="bg-linear-to-r from-green-500 to-green-400 text-white"
+            buttonText="Get Premium Plus"
           />
         </div>
       </div>
