@@ -24,8 +24,8 @@ const Hero = () => {
               that showcases your skills and experiences effortlessly.
             </p>
             <div className="flex flex-col justify-center space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 md:justify-start">
-              <Link href="/" className="hero-button">
-                Get Started - For Free
+              <Link href="/create-resume" className="hero-button">
+                Get Started
               </Link>
             </div>
           </div>

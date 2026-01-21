@@ -30,7 +30,7 @@ const PricingCard = ({
       <div className="mt-6 flex items-center justify-center">
         <button
           className={cn(
-            "cursor-pointer rounded-md px-4 py-2 transition-all duration-300 ease-in-out hover:scale-105",
+            "cursor-pointer rounded-md px-4 py-2 transition-all duration-300 ease-in-out hover:scale-105 w-full",
             className,
           )}
         >

@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { BorderStyles } from "./BorderStyleButton";
 interface ResumePreviewProps {
   resumeData: ResumeType;
-  contentRef: React.Ref<HTMLDivElement>;
+  contentRef?: React.Ref<HTMLDivElement>;
   className?: string;
 }
 

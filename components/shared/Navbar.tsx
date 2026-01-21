@@ -23,7 +23,7 @@ const Navbar = async () => {
     name = names[0].charAt(0).toUpperCase() + names[1].charAt(0).toUpperCase();
   }
   return (
-    <header className="sticky top-0 z-50 h-20 w-full shadow-xs backdrop-blur-xs">
+    <header className="sticky top-0 z-50 h-20 w-full shadow-xs backdrop-blur-lg">
       <nav className="mx-auto flex h-full max-w-7xl items-center justify-between">
         <Link href={`/`} className="text-xl font-bold text-blue-600">
           Resume Generator
