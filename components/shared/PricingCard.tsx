@@ -1,6 +1,10 @@
+"use client";
+import { createCheckoutSession } from "@/data/action";
+import { env } from "@/lib/env";
 import { cn } from "@/lib/utils";
 import { CheckIcon } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 const PricingCard = ({
   title,
@@ -8,13 +12,37 @@ const PricingCard = ({
   features,
   className,
   buttonText,
+  pre 
 }: {
   title: string;
   price: number;
   features: string[];
   buttonText: string;
   className?: string;
+  pre?:boolean;
 }) => {
+
+const [loading ,setLoading] = useState(false);
+const priceId = pre ? env.NEXT_PUBLIC_PRICE_ID_PRO_PLUS_MONTHLY! : env.NEXT_PUBLIC_PRICE_ID_PRO_MONTHLY!;
+
+const handleSubscribe = async ()=>{
+  setLoading(true);
+
+ try{
+   
+  const redurectUrl = await createCheckoutSession(priceId);
+  console.log("Redirecting to:", redurectUrl);
+  window.location.href = redurectUrl;
+ }
+ catch(err){
+  console.log("Error creating checkout session:", err);
+  toast.error("Failed to initiate checkout. Please try again.");
+ }
+ finally{
+  setLoading(false);
+ }
+}
+
   return (
     <div className="w-md overflow-x-clip rounded-xl border-2 border-slate-200 p-4 shadow-sm">
       <h2 className="text-center text-2xl font-bold">{title}</h2>
@@ -33,8 +61,10 @@ const PricingCard = ({
             "cursor-pointer rounded-md px-4 py-2 transition-all duration-300 ease-in-out hover:scale-105 w-full",
             className,
           )}
+          onClick={handleSubscribe}
+          disabled={loading}
         >
-          {buttonText}
+          {loading ? (<span> Processing...</span>) : buttonText}
         </button>
       </div>
     </div>

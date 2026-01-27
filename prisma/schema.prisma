@@ -19,16 +19,17 @@ enum role {
 }
 
 model User {
-  id            String    @id
-  name          String
-  email         String
-  emailVerified Boolean
-  image         String?
-  role          role      @default(user) @map("role")
-  createdAt     DateTime
-  updatedAt     DateTime
-  sessions      Session[]
-  accounts      Account[]
+  id               String            @id
+  name             String
+  email            String
+  emailVerified    Boolean
+  image            String?
+  role             role              @default(user) @map("role")
+  createdAt        DateTime
+  updatedAt        DateTime
+  sessions         Session[]
+  accounts         Account[]
+  
 
   @@unique([email])
   @@map("user")
@@ -130,4 +131,19 @@ model Education {
   resume      Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 
   @@map("education")
+}
+
+model UserSubscription {
+  id                      String   @id @default(cuid())
+  userId                  String   @unique
+  stripeCustomerId        String   @unique
+  stripeSubscriptionId    String   @unique
+  stripePriceId           String
+  stripeCurrentPeriodEnd  DateTime
+  stripeCancelAtPeriodEnd Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("user_subscriptions")
 }

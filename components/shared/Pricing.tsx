@@ -3,6 +3,8 @@ import Wrapper from "./Wrapper";
 import PricingCard from "./PricingCard";
 
 const Pricing = () => {
+
+ 
   return (
     <Wrapper className="mt-4 md:mt-12">
       <div className="flex flex-col gap-3">
@@ -23,6 +25,7 @@ const Pricing = () => {
             ]}
             className="bg-black text-white"
             buttonText="Get Premium"
+            pre={false}
           />
           <PricingCard
             title="Premium"
@@ -30,6 +33,7 @@ const Pricing = () => {
             features={["AI Tools", "Design Customization", "Unlimited Resume"]}
             className="bg-linear-to-r from-green-500 to-green-400 text-white"
             buttonText="Get Premium Plus"
+            pre={true}
           />
         </div>
       </div>

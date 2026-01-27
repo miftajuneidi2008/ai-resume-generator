@@ -7,6 +7,8 @@ import { utapi } from "@/lib/uploadthing-server";
 import { ResumeType } from "@/lib/ValidationSchema";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import stripe from "@/lib/stripe";
+import { env } from "@/lib/env";
 
 export const saveResume = async (values: ResumeType) => {
   const session = await getUserSession();
@@ -132,4 +134,41 @@ export async function deleteResume(id: string) {
   });
 
   revalidatePath("/resumes");
+}
+
+
+
+
+export async function createCheckoutSession(priceId: string) {
+  const session = await getUserSession();
+  if (!session) {
+    throw new Error("User not authenticated");
+  }
+
+  const sessions = await stripe.checkout.sessions.create({
+    mode: "subscription",
+    line_items: [{ price: priceId, quantity: 1 }],
+    success_url: `${env.NEXT_PUBLIC_NEXTURL}/billing/success`,
+    cancel_url: `${env.NEXT_PUBLIC_NEXTURL}/billing`, 
+    customer_email: session.user.email || undefined,
+    subscription_data:{
+      metadata:{
+        userId: session.user.id
+      }
+    },
+    custom_text:{
+      terms_of_service_acceptance:{
+        message:`I have read AI resume generator's [terms of service](${env.NEXT_PUBLIC_NEXTURL}/tos) and agree to them.`,
+        
+      }
+    },
+    consent_collection:{
+      terms_of_service:"required"
+    }
+  });
+  
+  if (!sessions.url) {
+    throw new Error("Failed to create checkout session");
+  }
+  return sessions.url;
 }
