@@ -4,7 +4,7 @@ const UserPage = async () => {
   return (
     <>
       <Hero />
-      <Pricing />
+      <Pricing />  
     </>
   );
 };

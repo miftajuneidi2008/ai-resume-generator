@@ -3,12 +3,13 @@ import { getUserSession } from "@/lib/getUserSession";
 import React from "react";
 import SubscriptionLevelProvider from "./SubscriptionLevelProvider";
 import { getUserSubscriptionLevel } from "@/lib/subscription";
+import { redirect } from "next/navigation";
 
 const UserLayout = async({ children }: { children: React.ReactNode }) => {
   const session = await getUserSession();
   if(!session)
   {
-    return null;
+    return redirect('/login');
   }
    const userSubscriptionLevel = await getUserSubscriptionLevel(session.user.id);
   return (
