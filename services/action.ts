@@ -1,18 +1,30 @@
 "use server";
 
+import { getUserSession } from "@/lib/getUserSession";
+import { canUseAITools } from "@/lib/permissions";
+import { getUserSubscriptionLevel } from "@/lib/subscription";
 import {
   generateSummarySchema,
   GenerateSummaryType,
   generateWorkExperienceSchema,
   GenerateWorkExperienceType,
   WorkExperiences,
-  WorkExperienceType,
+
 } from "@/lib/ValidationSchema";
 import Groq from "groq-sdk";
+import { redirect } from "next/navigation";
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export async function generateProfessionalSummary(value: GenerateSummaryType) {
+  const session = await getUserSession();
+  if(!session){
+    return redirect("/login");
+  }
+  const subscriptionLevel = await getUserSubscriptionLevel(session.user.id!);
+  if(!canUseAITools(subscriptionLevel)){
+    throw new Error("Upgrade your subscription to use AI features");
+  }
   const { jobTitle, workExperience, education, skills } =
     generateSummarySchema.parse(value);
 

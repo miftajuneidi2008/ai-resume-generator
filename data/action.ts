@@ -9,6 +9,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import stripe from "@/lib/stripe";
 import { env } from "@/lib/env";
+import { getUserSubscriptionLevel } from "@/lib/subscription";
+import { canCreateResume, canUseCustomizations } from "@/lib/permissions";
 
 export const saveResume = async (values: ResumeType) => {
   const session = await getUserSession();
@@ -16,7 +18,20 @@ export const saveResume = async (values: ResumeType) => {
     return redirect("/login");
   }
   const { id } = values;
-  const { photo, workExperience, education, ...resumeVaues } = values;
+  const { photo, workExperience, education, ...resumeValues } = values;
+
+  const subscriptionLevel = await getUserSubscriptionLevel(session.user.id!);
+  if (!id) {
+    const resumeCount = await prisma.resume.count({
+      where: { userId: session?.user.id },
+    });
+    if (!canCreateResume(subscriptionLevel, resumeCount)) {
+      throw new Error(
+        "Maximum Resume count reached for this subscription level",
+      );
+    }
+  }
+
   const existingResume = id
     ? await prisma.resume.findUnique({
         where: { id, userId: session?.user.id },
@@ -27,11 +42,21 @@ export const saveResume = async (values: ResumeType) => {
     throw new Error("Resume not found");
   }
 
+  const hasCustomizations =
+    (resumeValues.borderStyle &&
+      resumeValues.borderStyle !== existingResume?.borderStyle) ||
+    (resumeValues.colorHex &&
+      resumeValues.colorHex !== existingResume?.colorHex);
+
+  if (hasCustomizations && !canUseCustomizations(subscriptionLevel)) {
+    throw new Error("Customizations not allowed for this subscription level");
+  }
+
   if (id) {
     return await prisma.resume.update({
       where: { id, userId: session?.user.id },
       data: {
-        ...resumeVaues,
+        ...resumeValues,
         photoUrl: photo,
         WorkExperience: {
           deleteMany: {},
@@ -55,7 +80,7 @@ export const saveResume = async (values: ResumeType) => {
   } else {
     return await prisma.resume.create({
       data: {
-        ...resumeVaues,
+        ...resumeValues,
         photoUrl: photo,
         userId: session?.user.id,
         WorkExperience: {
@@ -85,17 +110,20 @@ export async function fetchResume() {
     return redirect("/login");
   }
   const userId = session.user.id!;
+
   try {
     const resumeData = await prisma.resume.findMany({
       where: { userId: userId },
       include: resumeToInclude,
       orderBy: { updatedAt: "desc" },
     });
-    if (resumeData) {
-      return resumeData;
-    }
+    const resumeCount = resumeData.length;
+    const subscription:"free" | "pro" | "pro_plus" = await getUserSubscriptionLevel(session.user.id!);
+
+    return [resumeData, subscription, resumeCount] as const;
   } catch (error) {
     console.log(error);
+     return [[], null, 0] as const; 
   }
 }
 
@@ -136,9 +164,6 @@ export async function deleteResume(id: string) {
   revalidatePath("/resumes");
 }
 
-
-
-
 export async function createCheckoutSession(priceId: string) {
   const session = await getUserSession();
   if (!session) {
@@ -149,24 +174,23 @@ export async function createCheckoutSession(priceId: string) {
     mode: "subscription",
     line_items: [{ price: priceId, quantity: 1 }],
     success_url: `${env.NEXT_PUBLIC_NEXTURL}/billing/success`,
-    cancel_url: `${env.NEXT_PUBLIC_NEXTURL}/billing`, 
+    cancel_url: `${env.NEXT_PUBLIC_NEXTURL}/billing`,
     customer_email: session.user.email || undefined,
-    subscription_data:{
-      metadata:{
-        userId: session.user.id
-      }
+    subscription_data: {
+      metadata: {
+        userId: session.user.id,
+      },
     },
-    custom_text:{
-      terms_of_service_acceptance:{
-        message:`I have read AI resume generator's [terms of service](${env.NEXT_PUBLIC_NEXTURL}/tos) and agree to them.`,
-        
-      }
+    custom_text: {
+      terms_of_service_acceptance: {
+        message: `I have read AI resume generator's [terms of service](${env.NEXT_PUBLIC_NEXTURL}/tos) and agree to them.`,
+      },
     },
-    consent_collection:{
-      terms_of_service:"required"
-    }
+    consent_collection: {
+      terms_of_service: "required",
+    },
   });
-  
+
   if (!sessions.url) {
     throw new Error("Failed to create checkout session");
   }

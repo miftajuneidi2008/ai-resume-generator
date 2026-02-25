@@ -17,7 +17,7 @@ const Pricing = () => {
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <PricingCard
             title="Premium"
-            price={0}
+            price={7.99}  
             features={[
               "AI Tools",
               "Design Customization",
@@ -28,8 +28,8 @@ const Pricing = () => {
             pre={false}
           />
           <PricingCard
-            title="Premium"
-            price={5}
+            title="Premium Plus"
+            price={12.99} 
             features={["AI Tools", "Design Customization", "Unlimited Resume"]}
             className="bg-linear-to-r from-green-500 to-green-400 text-white"
             buttonText="Get Premium Plus"
