@@ -47,7 +47,7 @@ npm install
 ```
 
 ### 3. Environment Setup
-Create a `.env.local` file in the root directory and copy the following variables. You will need to fill in the values from your respective provider consoles.
+Create a `.env.local` file in the root directory and copy the following variables.
 
 ```env
 # App Configuration
@@ -72,6 +72,7 @@ GOOGLE_API_KEY="your_google_api_key"
 # Stripe Configuration
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_..."
 STRIPE_SECRET_KEY="sk_test_..."
+STRIPE_WEBHOOK_SECRET="whsec_..."
 NEXT_PUBLIC_PRICE_ID_PRO_MONTHLY="price_..."
 NEXT_PUBLIC_PRICE_ID_PRO_PLUS_MONTHLY="price_..."
 
@@ -93,11 +94,20 @@ NEXT_TURBOPACK_EXPERIMENTAL_USE_SYSTEM_TLS_CERTS=true
 1. Visit the [Groq Console](https://console.groq.com/).
 2. Generate an API Key to enable the AI resume generation features.
 
-### Stripe Integration
-1. Log in to your [Stripe Dashboard](https://dashboard.stripe.com/).
-2. Create two **Products** (e.g., "Pro Plan" and "Pro Plus Plan").
-3. Create a **Recurring Price** (Monthly) for each.
-4. Copy the **Price IDs** (starting with `price_...`) and paste them into your `.env.local`.
+### Stripe Integration & Webhooks
+1. **Products:** Log in to your [Stripe Dashboard](https://dashboard.stripe.com/) (Test Mode). Create "Pro" and "Pro Plus" products and copy their **Price IDs**.
+2. **Local Webhook Testing:** Since Stripe cannot talk directly to `localhost`, you must forward the events:
+   *   **Option A (Stripe CLI):** Install the Stripe CLI and run:
+     ```bash
+     stripe listen --forward-to localhost:3000/api/webhook
+     ```
+   *   **Option B (ngrok):** Run `ngrok http 3000` and use the provided public URL in the Stripe Dashboard.
+3. **Webhook Secret:** Copy the signing secret (`whsec_...`) provided by the CLI or Dashboard and paste it into `STRIPE_WEBHOOK_SECRET`.
+4. **Events:** Ensure your webhook is configured to listen for these specific events:
+   *   `checkout.session.completed`
+   *   `customer.subscription.created`
+   *   `customer.subscription.updated`
+   *   `customer.subscription.deleted`
 
 ---
 
