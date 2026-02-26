@@ -57,20 +57,14 @@ const Navbar = async () => {
               <DropdownMenuContent>
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer">
-                  Profile
-                </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer">
-                  Billing
-                </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer">
-                  Subscription
+                <DropdownMenuItem className="cursor-pointer" asChild>
+                  <Link href={`/billing`}>Billing</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="cursor-pointer">
                   <form
                     action={async () => {
                       "use server";
-                      await signOut();
+                      await signOut();   
                     }}
                   >
                     <Button
