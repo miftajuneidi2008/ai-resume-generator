@@ -25,7 +25,7 @@ const SummaryInfo = ({ resumeData, setResumeData }: EditorProps) => {
 
   useEffect(() => {
     const { unsubscribe } = form.watch(async (value) => {
-      const isValid = await form.trigger();
+      const isValid = await form.trigger(); 
       if (!isValid) return;
       setResumeData({
         ...resumeData,

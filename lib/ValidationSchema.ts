@@ -1,4 +1,3 @@
-import { generateCodeChallenge } from "better-auth";
 import { z } from "zod";
 const optionalString = z.string().trim().optional().or(z.literal(""));
 
@@ -116,3 +115,24 @@ export const generateSummarySchema = z.object({
 });
 
 export type GenerateSummaryType = z.infer<typeof generateSummarySchema>;
+
+
+
+
+const MAX_FILE_SIZE = 3 * 1024 * 1024 // 3MB in bytes
+
+export const resumeFileSchema = z
+  .instanceof(File)
+  .refine((file) => file.type === 'application/pdf', {
+    message: 'File must be a PDF',
+  })
+  .refine((file) => file.size <= MAX_FILE_SIZE, {
+    message: `File size must be less than 3MB. Current size: ${(MAX_FILE_SIZE / (1024 * 1024)).toFixed(2)}MB`,
+  })
+
+export const resumeUploadSchema = z.object({
+  resume: resumeFileSchema,
+})
+
+export type ResumeUploadInput = z.infer<typeof resumeUploadSchema>
+

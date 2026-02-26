@@ -8,21 +8,21 @@ import {
   GenerateSummaryType,
   generateWorkExperienceSchema,
   GenerateWorkExperienceType,
+  ResumeUploadInput,
   WorkExperiences,
-
 } from "@/lib/ValidationSchema";
 import Groq from "groq-sdk";
 import { redirect } from "next/navigation";
-
+import pdf from 'pdf-parse-fork';
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export async function generateProfessionalSummary(value: GenerateSummaryType) {
   const session = await getUserSession();
-  if(!session){
+  if (!session) {
     return redirect("/login");
   }
   const subscriptionLevel = await getUserSubscriptionLevel(session.user.id!);
-  if(!canUseAITools(subscriptionLevel)){
+  if (!canUseAITools(subscriptionLevel)) {
     throw new Error("Upgrade your subscription to use AI features");
   }
   const { jobTitle, workExperience, education, skills } =
@@ -33,10 +33,6 @@ export async function generateProfessionalSummary(value: GenerateSummaryType) {
      You are a job resume generator AI. Your task is to write a professional introduction summary for a resume 
      given the users provided data. Only return the summary and do not include any other information in the resource. keep it concise and professional.
     `;
-
-    // FIX: Ensure you are using a supported model name.
-    // Try "gemini-1.5-flash" first (with latest SDK), or fallback to "gemini-1.5-flash-001"
-
     const userMessage = `
     Please generate a professional resume summary from this data:
     Job Title: ${jobTitle || "N/A"} 
@@ -50,7 +46,7 @@ export async function generateProfessionalSummary(value: GenerateSummaryType) {
         { role: "system", content: system_message },
         { role: "user", content: userMessage },
       ],
-      model: "llama-3.3-70b-versatile", // or "llama-3.1-8b-instant"
+      model: "llama-3.3-70b-versatile",
     });
 
     return {
@@ -91,7 +87,6 @@ export async function GenerateWorkExperience(
       ],
       model: "llama-3.3-70b-versatile", // or "llama-3.1-8b-instant"
     });
-    console.log(chatCompletion.choices[0]?.message?.content, "asgsdg");
 
     if (chatCompletion.choices[0]?.message?.content) {
       const aiResponse = chatCompletion.choices[0]?.message?.content;
@@ -108,5 +103,52 @@ export async function GenerateWorkExperience(
   } catch (error) {
     console.error("AI Error:", error);
     return { success: false, error: "Failed to generate summary" };
+  }
+}
+
+export async function reviewResumeAction(data: ResumeUploadInput) {
+  try {
+    const session = await getUserSession();
+    if (!session) throw new Error("Unauthorized");
+
+    // 1. Extract the file from FormData
+    const file = data.resume as File;
+    if (!file) throw new Error("No file uploaded");
+
+    // 2. Convert File to a Node.js Buffer
+    // Server Actions receive the file as a Blob/File object
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    // 2. Extract Text (No worker error here!)
+    const pdfData = await pdf(buffer);
+    const resumeText = pdfData.text;
+   
+
+
+    //4. Send to Groq
+    const chatCompletion = await groq.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content: `You are a professional resume reviewer. Analyze the resume text and provide:
+          1. A score out of 100.
+          2. A list of strengths.
+          3. A list of specific corrections/improvements.
+          Return the data strictly as a JSON object.`
+        },
+        { role: "user", content: resumeText },
+      ],
+      model: "llama-3.3-70b-versatile",
+      response_format: { type: "json_object" },
+    });
+
+    return {
+      success: true,
+      data: chatCompletion.choices[0]?.message?.content || "", 
+    };
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    return { success: false, error: "Failed to process resume" };
   }
 }

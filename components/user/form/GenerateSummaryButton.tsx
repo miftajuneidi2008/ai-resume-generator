@@ -23,6 +23,7 @@ const GenerateSummaryButton = ({
         onGenerateSummary(aiResponse.data!);
       }
     } catch (error) {
+      console.error("Error generating summary:", error);
       toast.error("Failed to generate summary.");
     } finally {
       setIsLoading(false);
