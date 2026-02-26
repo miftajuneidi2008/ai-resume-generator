@@ -7,7 +7,7 @@ import prisma from "@/lib/prisma";
 import { resumeToInclude } from "@/lib/types";
 import { fetchResume } from "@/data/action";
 import { canCreateResume } from "@/lib/permissions";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 interface PageProps {
   searchParams: Promise<{ resumeId?: string }>;
@@ -40,7 +40,7 @@ const CreateResumePage = async ({ searchParams }: PageProps) => {
         <div>
           <p>Maximum Resume count reached for this subscription level</p>
         </div>
-       <Link href="/" className={buttonVariants({variant:"outline"})} >Upgrade your subscription for more service</Link>
+       <Link href="/" className={`${buttonVariants({variant:"default"})}`} >Upgrade your subscription for more service</Link>
       </div>
     );
   }

@@ -197,6 +197,6 @@ export async function createCheckoutSession(priceId: string) {
   if (!sessions.url) {
     throw new Error("Failed to create checkout session");
   }
-  console.log(sessions)
+ 
   return sessions.url;
 }

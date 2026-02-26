@@ -89,14 +89,14 @@ async function handleSubscriptionCreatedOrUpdated(subscriptionId: string) {
         stripePriceId: subscription.items.data[0].price.id,
         // Now this will work and IntelliSense will show it
         stripeCurrentPeriodEnd: new Date(
-          subscription.current_period_end * 1000, 
+          subscription.canceled_at as number * 1000,  
         ),
         stripeCancelAtPeriodEnd: subscription.cancel_at_period_end,
       },
       update: {
         stripePriceId: subscription.items.data[0].price.id,
         stripeCurrentPeriodEnd: new Date(
-          subscription.current_period_end * 1000,
+          subscription.canceled_at as number * 1000,
         ),
         stripeCancelAtPeriodEnd: subscription.cancel_at_period_end,
       },
