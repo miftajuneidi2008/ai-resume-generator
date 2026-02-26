@@ -19,17 +19,17 @@ enum role {
 }
 
 model User {
-  id               String            @id
+  id               String    @id
   name             String
+  stripeCustomerId String?   @unique
   email            String
-  emailVerified    Boolean
+  emailVerified    Boolean 
   image            String?
-  role             role              @default(user) @map("role")
+  role             role      @default(user) @map("role")
   createdAt        DateTime
   updatedAt        DateTime
   sessions         Session[]
   accounts         Account[]
-  
 
   @@unique([email])
   @@map("user")

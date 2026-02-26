@@ -176,11 +176,14 @@ export async function createCheckoutSession(priceId: string) {
     success_url: `${env.NEXT_PUBLIC_NEXTURL}/billing/success`,
     cancel_url: `${env.NEXT_PUBLIC_NEXTURL}/billing`,
     customer_email: session.user.email || undefined,
-    subscription_data: {
-      metadata: {
-        userId: session.user.id,
-      },
+     metadata: {
+    userId: session.user.id, 
+  },
+  subscription_data: {
+    metadata: {
+      userId: session.user.id, 
     },
+  },
     custom_text: {
       terms_of_service_acceptance: {
         message: `I have read AI resume generator's [terms of service](${env.NEXT_PUBLIC_NEXTURL}/tos) and agree to them.`,
@@ -194,5 +197,6 @@ export async function createCheckoutSession(priceId: string) {
   if (!sessions.url) {
     throw new Error("Failed to create checkout session");
   }
+  console.log(sessions)
   return sessions.url;
 }
